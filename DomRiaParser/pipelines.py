@@ -38,17 +38,31 @@ class DomriaparserPipeline(object):
         self.connection.close()
 
     def process_item(self, item, spider):
-        # query = """INSERT INTO domria (number_of_rooms,
-        # total_space, price, living_space,kitchen_space,
-        # who_saler, floor, storeys, distance_center,
-        # type_center, type_heating, distance_subway,
-        # type_subway, distance_market, type_market, url,
-        # addres, uniqueID, data_of_pulication, description)
-        # VALUES(%d,%lf,%d,%lf,%lf,%s,%d,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%d,%s,%s)
-        #  """"INSERT INTO domria(price) VALUES(%s)" ,(item['price'])
-        query = "INSERT INTO domria('addres') VALUES("
+
+        description = ' '
+        addres = ''
+        for i in item['description']:
+            description += i
+        for i in item['addres']:
+            addres += i
+
+        self.connection.rollback()
+        self.cursor.execute("""INSERT INTO domria (price,uniqueID,number_of_rooms, floor, storeys,
+                                                   total_space,living_space, kitchen_space, who_saler,
+                                                   distance_center, type_center,type_heating,
+                                                   distance_subway, type_subway, distance_market,
+                                                   type_market,url,data_of_pulication, description, addres) 
+                                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", 
         
-        self.cursor.execute("insert into domria(price) VALUES(%s)" ,(item['price']) )
-      
-        self.connection.autocommit(True)
+        (item['price'][0],item['uniqueID'][0],item['number_of_rooms'][0],item['floor'][0],
+         item['storeys'][0], item['total_space'][0], item['living_space'][0],
+         item['kitchen_space'][0], item['who_saler'][0], item['distance_center'][0],
+         item['type_center'][0], item['type_heating'][0], item['distance_subway'][0],
+         item['type_subway'][0], item['distance_market'][0], item['type_market'][0],
+         item['url'][0], item['data_of_pulication'][0], description,addres
+        ))
+
+        self.connection.commit()
+
+        
         return item

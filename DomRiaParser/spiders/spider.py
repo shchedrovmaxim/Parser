@@ -44,7 +44,7 @@ class DomRiaSpider(CrawlSpider):
         if uniqueIDstr:
             uniqueID = int(uniqueIDstr)
         else:
-            uniqueID = None
+            uniqueID = 0
         data_of_pulication = getText(response,'//*[@id="app"]/div[3]/div/div[3]/aside/ul[4]/li[1]/b/text()')
 
         storeys = getIntObj(response,'//*[@id="description"]/div[1]/div[3]/ul/li[3]/div[2]/text()')
@@ -54,16 +54,16 @@ class DomRiaSpider(CrawlSpider):
         center_dist, center_type, type_heating, subway_dist, subway_type, market_dist,market_type = getSubway(response,'//*[@id="additionalInfo"]//text()')
         
         #phone = getText(response,'//*[@id="app"]/div[3]/div/div[3]/aside/ul[2]/li[7]/div/span[1]//text()')
-        print('\n\n\n', addres[0], '\n\n')
+       
 
-        
+     
 
         
         l.add_value('description', description)
         l.add_value('storeys', storeys)       
         l.add_value('data_of_pulication',data_of_pulication)
         l.add_value('uniqueID',uniqueID)
-        l.add_value('addres',str(addres))
+        l.add_value('addres',addres)
         l.add_value('price', price)
         l.add_value('floor',floor)
         l.add_value('number_of_rooms',number_of_rooms)
@@ -96,7 +96,7 @@ def getText(response,xpaz):
     if type(selector) == str:
         selector = selector.strip()
     else: 
-        selector = None
+        selector = ''
     return selector
 
 def getObj(response,xpaz):
@@ -105,7 +105,7 @@ def getObj(response,xpaz):
     if type(selector) == str:
         selector = selector.strip()
     else: 
-        return None
+        return ''
     price =''
     for char in selector:
         if char != ' ' and char != '$':
@@ -119,7 +119,7 @@ def getIntObj(response,xpaz):
     if type(selector) == str:
         selector = selector.strip()
     else: 
-        return None
+        return ''
     selector = float(selector[:3].strip())
     return selector
         
@@ -129,12 +129,12 @@ def getSpace(response,xpaz):
     if type(spaces) == str:
         spaces = spaces.strip()
     else: 
-        return None
+        return ''
     total_split = [i for i in re.split(r'(\d+.\d+|\W+)', spaces) if i]
     
-    total_space = None
-    live_space = None
-    kitchen_space = None
+    total_space = 0
+    live_space = 0
+    kitchen_space = 0
     
     sqear = [None]*3
     index = 0
@@ -148,10 +148,10 @@ def getSpace(response,xpaz):
         if sqear[0]:
             total_space = float(sqear[0])
         else: 
-            total_split = None
+            total_split = 0
         if sqear[1]:
             kitchen_space = float(sqear[1])
-        else: live_space = None
+        else: live_space = 0
         
     else:
         total_space = float(sqear[0])
@@ -165,8 +165,8 @@ def getSubway(response, xpaz):
     selector = response.xpath(xpaz)
     listWithout = []
     lists = selector.getall()
-    subway_dist,center_dist,center_type,type_heating,subway_type = None,None,None,None,None
-    market_type,market_dist = None, None
+    subway_dist,center_dist,center_type,type_heating,subway_type = '','','','',''
+    market_type,market_dist = '', ''
     for element in lists:
         listWithout.append(element.strip())
     strings = ''

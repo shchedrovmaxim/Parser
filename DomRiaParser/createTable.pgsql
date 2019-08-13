@@ -18,7 +18,7 @@ CREATE TABLE DomRia (
     url                 TEXT DEFAULT Null,
    
     addres              TEXT DEFAULT Null,
-    uniqueID            INTEGER PRIMARY KEY DEFAULT Null,
+    uniqueID            INTEGER PRIMARY KEY ,
     data_of_pulication  TEXT DEFAULT Null,
     description         TEXT DEFAULT Null
 );
